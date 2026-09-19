@@ -61,6 +61,17 @@ header{padding:16px 0}.nav{display:flex;align-items:center;justify-content:space
 .custom-activity-box.show{display:block}
 .custom-activity-box input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px}
 
+
+.venue-box{display:none;margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#faf8ff}
+.venue-box.show{display:block}
+.venue-box input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px}
+.venue-found{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.venue-packages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.venue-package{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.venue-package h4{margin:0 0 6px}.venue-package p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+.venue-package b{display:block;margin-top:8px;font-size:18px;color:#5b42be}
+@media(max-width:800px){.venue-packages{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -94,7 +105,20 @@ header{padding:16px 0}.nav{display:flex;align-items:center;justify-content:space
 <div class="field full"><label>1. ¿Qué celebras?</label><div class="options" data-group="occasion"><button class="choice selected" data-value="Cumpleaños">🎂 Cumpleaños</button><button class="choice" data-value="Navidad">🎄 Navidad</button><button class="choice" data-value="Fiesta adulta">🥂 Fiesta adulta</button><button class="choice" data-value="Otra celebración">✨ Otra celebración</button></div></div>
 <div class="field"><label>2. Edad</label><input id="age" type="number" min="1" max="100" value="8"></div>
 <div class="field"><label>3. Invitados</label><div class="options" data-group="guests"><button class="choice" data-value="8">1–10</button><button class="choice selected" data-value="15">11–20</button><button class="choice" data-value="30">21–40</button><button class="choice" data-value="45">+40</button></div></div>
-<div class="field"><label>4. Lugar</label><div class="options" data-group="place"><button class="choice selected" data-value="Casa">🏠 Casa</button><button class="choice" data-value="Exterior">🌳 Exterior</button><button class="choice" data-value="Local">🎈 Local</button><button class="choice" data-value="Restaurante">🍕 Restaurante</button></div></div>
+<div class="field"><label>4. Lugar</label>
+  <div class="options" data-group="place">
+    <button class="choice selected" data-value="Casa">🏠 Casa</button>
+    <button class="choice" data-value="Exterior">🌳 Exterior</button>
+    <button class="choice" data-value="Local">🎈 Local</button>
+    <button class="choice" data-value="Restaurante">🍕 Restaurante</button>
+    <button class="choice" data-value="Sitio concreto">📍 Ya tengo un sitio concreto</button>
+  </div>
+  <div class="venue-box" id="venueBox">
+    <input id="venueInput" placeholder="Ej.: Salting Granollers, bolera, parque de trampolines...">
+    <div class="hint">Si conocemos el lugar, Cumpleverso adaptará el plan a lo que ya ofrece.</div>
+    <div id="venueDetected"></div>
+  </div>
+</div>
 <div class="field"><label>5. Presupuesto</label><div class="options" data-group="budget"><button class="choice" data-value="100">Hasta 100 €</button><button class="choice selected" data-value="200">100–250 €</button><button class="choice" data-value="380">250–500 €</button><button class="choice" data-value="650">+500 €</button></div></div>
 <div class="field full"><label id="interestLabel">6. Tema / gusto principal</label><div class="options three" id="interestOptions"></div>
 <div class="inline-extra" id="customInterestWrap"><input id="customInterest" placeholder="Ej.: básquet, Pokémon, caballos, Harry Potter..."></div>
@@ -169,7 +193,7 @@ const giftSets={
  adult:[['Gastronomía','🍷'],['Viajes','✈️'],['Tecnología','📱'],['Bienestar','🧘'],['Hogar','🏠'],['Experiencias','🎟️']]
 };
 
-const state={occasion:'Cumpleaños',guests:15,place:'Casa',budget:200,interest:'Fútbol',profile:'',activity:''};
+const state={occasion:'Cumpleaños',guests:15,place:'Casa',budget:200,interest:'Fútbol',profile:'',venue:'',activity:''};
 const giftState={budget:50,interest:'Fútbol'};
 let ownedGiftKeys=new Set();
 
@@ -190,10 +214,20 @@ function renderInterests(){
  state.interest=arr[0][0];
 }
 renderProfiles();renderInterests();
+document.addEventListener('input',e=>{
+ if(e.target && e.target.id==='venueInput'){state.venue=e.target.value;renderVenueDetected();}
+});
+
 
 document.querySelectorAll('[data-group]').forEach(group=>group.querySelectorAll('.choice').forEach(btn=>btn.onclick=e=>{
  e.preventDefault();group.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');
- const k=group.dataset.group,v=btn.dataset.value;state[k]=['guests','budget'].includes(k)?Number(v):v;if(k==='occasion')renderInterests();
+ const k=group.dataset.group,v=btn.dataset.value;state[k]=['guests','budget'].includes(k)?Number(v):v;
+ if(k==='occasion')renderInterests();
+ if(k==='place'){
+   document.getElementById('venueBox').classList.toggle('show',v==='Sitio concreto');
+   if(v!=='Sitio concreto'){state.venue='';document.getElementById('venueDetected').innerHTML='';}
+ }
+ if(k==='guests' && state.place==='Sitio concreto') renderVenueDetected();
 }));
 
 function effectiveInterest(){
@@ -205,8 +239,60 @@ function effectiveInterest(){
 }
 function age(){return Math.max(1,Math.min(100,Number(document.getElementById('age').value)||8))}
 
+
+const venueDB={
+ 'salting granollers':{
+   name:'Salting Granollers',
+   type:'Parque de trampolines',
+   packages:[
+     {name:'BASIC',price:14,desc:'1 h de salto + 30 min de celebración.'},
+     {name:'MAXI',price:16.5,desc:'1 h 30 min de salto + 45 min de celebración.'},
+     {name:'EXTREME',price:21.5,desc:'2 h de salto + 45 min de celebración + calcetines.'}
+   ],
+   notes:['La actividad principal ya la resuelve el centro.','Conviene confirmar calcetines, alergias, tarta y extras al reservar.','Llegar 15–20 minutos antes ayuda a reunir al grupo.'],
+   extras:['15 min extra de salto','30 min extra de celebración','Tarta / comida / bebida','Decoración personalizada']
+ }
+};
+
+function normalizeVenue(v){
+ return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+function detectedVenue(){
+ const raw=document.getElementById('venueInput')?.value.trim()||'';
+ const n=normalizeVenue(raw);
+ if(!raw) return null;
+ if(n.includes('salting')&&n.includes('granollers')) return venueDB['salting granollers'];
+ return {name:raw,type:'Lugar concreto',packages:[],notes:['Cumpleverso tratará este lugar como actividad principal.','En producción se consultarían servicios, horarios, precios y extras actualizados del centro.'],extras:[]};
+}
+function renderVenueDetected(){
+ const v=detectedVenue(),box=document.getElementById('venueDetected');
+ if(!v){box.innerHTML='';return}
+ if(v.packages.length){
+   const g=state.guests;
+   box.innerHTML=`<div class="venue-found"><b>✓ Lugar reconocido: ${esc(v.name)}</b><div class="hint">${esc(v.type)}. Ajustaremos la celebración a lo que el centro ya resuelve.</div>
+   <div class="venue-packages">${v.packages.map(p=>`<div class="venue-package"><h4>${p.name}</h4><p>${esc(p.desc)}</p><b>≈ ${(p.price*g).toFixed(2).replace('.',',')} € / ${g} personas</b></div>`).join('')}</div></div>`;
+ }else{
+   box.innerHTML=`<div class="venue-found"><b>📍 ${esc(v.name)}</b><div class="hint">Lo trataremos como lugar/actividad principal y evitaremos proponerte juegos que no hagan falta.</div></div>`;
+ }
+}
+
 function proposedActivities(interest,place,a){
  const low=interest.toLowerCase();
+ if(place==='Sitio concreto'){
+   const v=detectedVenue();
+   if(v && normalizeVenue(v.name).includes('salting') && normalizeVenue(v.name).includes('granollers')){
+     return[
+       ['Salting Granollers','El centro ya es la actividad principal. Cumpleverso completa logística, comida, extras, regalos y plan B.'],
+       ['Salting + complemento corto','Salting como actividad principal + un pequeño juego/quiz antes o después.'],
+       ['Salting + celebración simple','Actividad del centro + comida/tarta/fotos, sin añadir más juegos.']
+     ];
+   }
+   if(v) return[
+     [v.name,'Usamos el lugar elegido como actividad principal.'],
+     [v.name+' + complemento corto','Añadimos solo un juego/quiz breve antes o después.'],
+     ['Celebración simple en '+v.name,'Sin forzar actividades extra.']
+   ];
+ }
  if(low==='sin tema'){
    if(place==='Exterior') return [
      ['Gincana de 4 pruebas','Una opción neutra, dinámica y fácil de adaptar.'],
@@ -280,6 +366,24 @@ function effectiveChosenActivity(){
 function planFor(interest,activity){
  const il=interest.toLowerCase(),al=activity.toLowerCase();
 
+ if(state.place==='Sitio concreto'){
+   const v=detectedVenue();
+   if(v && normalizeVenue(v.name).includes('salting') && normalizeVenue(v.name).includes('granollers')){
+     return[
+       ['Antes','Llegada y control del grupo',['Llega 15–20 minutos antes.','Confirma asistencia y alergias.','Comprueba calcetines y normas del centro.','Haz una foto de grupo al inicio si quieres evitar olvidarla después.']],
+       ['Actividad principal','Salting Granollers',['No añadas una gincana ni juegos extra durante el salto: el centro ya resuelve la actividad.','Elige el pack según duración y presupuesto.','Asegúrate de que todos saben cuándo empieza y termina el salto.']],
+       ['Después','Comida / tarta / regalos',['Ten decidida de antemano la opción de comida.','Haz tarta y velas al terminar el salto.','Si abren regalos, hazlo solo si queda tiempo y el centro lo permite.']],
+       ['Comodín','Quiz rápido del cumpleañero',['Solo si sobran 10 minutos.','10 preguntas fáciles sobre el cumpleañero o sus gustos.','Sin eliminaciones.']]
+     ];
+   }
+   return[
+     ['Antes','Llegada y organización',['Llega con antelación.','Confirma qué incluye el centro y qué debes llevar tú.','Reúne al grupo antes de empezar.']],
+     ['Actividad principal',v?v.name:activity,['Deja que el centro/lugar haga de actividad principal.','No añadas juegos que compitan con la experiencia contratada.','Usa Cumpleverso para completar lo que falte: comida, tarta, regalos y logística.']],
+     ['Después','Celebración y comida',['Reserva un momento claro para comida, tarta y fotos.','Evita añadir otra actividad larga.']],
+     ['Comodín','Juego rápido de 10 minutos',['Solo si sobra tiempo.','Quiz, mímica o preguntas sobre el cumpleañero.']]
+   ];
+ }
+
  if(al==='sin actividad principal'){
    return [
     ['Inicio','Bienvenida tranquila',['Prepara música de fondo, bebidas y una zona clara donde dejar regalos o chaquetas.','No hagas equipos ni expliques reglas al llegar.','Deja 15–20 minutos para que todos se acomoden y hablen.']],
@@ -341,6 +445,17 @@ function planFor(interest,activity){
 }
 
 function readyItems(){
+ if(state.place==='Sitio concreto'){
+   const v=detectedVenue();
+   return[
+    ['📞 Reserva confirmada','Comprueba hora, número final de niños, qué incluye el pack y política de cambios.'],
+    ['👟 Requisitos del centro',v&&normalizeVenue(v.name).includes('salting')?'Confirma calcetines Salting y normas de acceso.':'Comprueba ropa, calzado o material obligatorio.'],
+    ['🍰 Comida / tarta','Decide qué pone el centro y qué llevas tú. Confirma alergias antes.'],
+    ['📱 Padres informados','Envía ubicación, hora de inicio, hora de recogida y teléfono de contacto.'],
+    ['🎁 Regalos preparados','Decide si se abren allí o en casa para no perder tiempo.'],
+    ['⏱️ Margen de llegada','Queda 15–20 minutos antes para reunir a todos sin empezar tarde.']
+   ];
+ }
  return[
   ['👥 Equipos listos','Haz los equipos antes. Si hay edades distintas, reparte a los mayores para equilibrar.'],
   ['📦 Una caja por actividad','Guarda separado todo lo necesario para cada juego.'],
@@ -351,6 +466,16 @@ function readyItems(){
  ];
 }
 function planBItems(){
+ if(state.place==='Sitio concreto'){
+   return[
+    ['👥 Si falla un invitado','Avisa al centro si cambia el número final. No reorganices la fiesta: el lugar ya resuelve la actividad.'],
+    ['➕ Si viene alguien más','Confirma con el centro si acepta añadir una plaza y cuánto cuesta.'],
+    ['⏰ Si alguien llega tarde','No retrases al grupo entero. Que se incorpore cuando el centro lo permita.'],
+    ['🍰 Si falta tiempo','Prioriza tarta + foto de grupo. Deja apertura de regalos para casa.'],
+    ['🚫 Si el centro cancela','Ten localizada una alternativa cercana: otro centro, bolera, cine o parque cubierto.'],
+    ['😴 Si están cansados','No añadas juegos extra. Pasa directamente a comida, tarta y cierre.']
+   ];
+ }
  return[
   ['🌧️ Si llueve',state.place==='Exterior'?'Busca primero una pista cubierta, porche, pérgola o local cercano. Si no hay alternativa, cambia el plan por quiz, escape room casero, mímica y precisión interior.':'Si una actividad dependía del exterior, sustitúyela por quiz, escape room, mímica o precisión interior.'],
   ['👥 Si vienen menos','Con 6–8 niños usa 2 equipos, no 3. Haz más rondas y reduce esperas.'],
@@ -362,6 +487,16 @@ function planBItems(){
 }
 function shoppingItems(interest,activity){
  const g=state.guests;
+ if(state.place==='Sitio concreto'){
+   const v=detectedVenue();
+   return[
+    ['1','reserva / pack del centro','La compra principal es la propia actividad.','cumpleaños '+(v?v.name:'centro actividades')],
+    [g<=10?'1':'2','packs de snacks o extras','Solo si el centro permite llevarlos o no están incluidos.','snacks cumpleaños'],
+    ['1','tarta / velas','Confirma si la tarta está incluida o si puedes llevarla.','velas cumpleaños tarta'],
+    [g,'pequeños detalles','Uno por invitado si quieres cerrar con un recuerdo.','detalles cumpleaños niños'],
+    ['1','regalo principal','Para el cumpleañero; el resto del gasto ya va al centro.','regalo '+interest]
+   ];
+ }
  const base=[
   [g<=10?'1':'2','packs de vasos y platos','Menaje para todos los invitados.','vasos platos fiesta'],
   [Math.max(2,Math.ceil(g/8)),'bolsas grandes de snacks','Para tener picoteo suficiente sin pasarse.','snacks fiesta pack'],
@@ -378,6 +513,14 @@ function shoppingItems(interest,activity){
 }
 function budgetItems(){
  const b=state.budget;
+ if(state.place==='Sitio concreto'){
+   const v=detectedVenue();
+   if(v && v.packages.length){
+     const p=v.packages[1]||v.packages[0],cost=Math.round(p.price*state.guests);
+     return[['Pack centro',cost],['Comida / extras',Math.max(20,Math.round(b*.18))],['Tarta / detalles',Math.max(15,Math.round(b*.10))],['Margen',Math.max(0,b-cost-Math.round(b*.28))]];
+   }
+   return[['Actividad / reserva',Math.round(b*.60)],['Comida / extras',Math.round(b*.20)],['Tarta / detalles',Math.round(b*.10)],['Margen',Math.round(b*.10)]];
+ }
  return[['Comida y bebida',Math.round(b*.36)],['Decoración',Math.round(b*.15)],['Actividades',Math.round(b*.22)],['Extras / margen',Math.round(b*.18)]];
 }
 
@@ -440,9 +583,12 @@ function renderAutoGifts(){
 document.getElementById('makeCelebration').onclick=()=>{
  if(!state.activity){alert('Primero elige una opción de actividad.');return}
  const a=age(),interest=effectiveInterest(),chosenActivity=effectiveChosenActivity(),plan=planFor(interest,chosenActivity);
- document.getElementById('resultTitle').textContent=interest==='Sin tema'?`${state.occasion} sin temática`:`${state.occasion}: ${interest}`;
- document.getElementById('resultIntro').textContent=`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${chosenActivity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €${interest==='Sin tema'?' y sin forzar una temática concreta.':''}`;
- document.getElementById('resultTags').innerHTML=[a+' años',state.guests+' invitados',state.place,chosenActivity,interest,state.budget+' €'].map(x=>`<span class="tag">${esc(x)}</span>`).join('');
+ const venue=state.place==='Sitio concreto'?detectedVenue():null;
+ document.getElementById('resultTitle').textContent=venue?`${state.occasion} en ${venue.name}`:(interest==='Sin tema'?`${state.occasion} sin temática`:`${state.occasion}: ${interest}`);
+ document.getElementById('resultIntro').textContent=venue
+   ?`Propuesta para ${state.guests} invitados en ${venue.name}. Cumpleverso no inventa juegos innecesarios: usa el centro como actividad principal y completa logística, comida, extras, presupuesto y regalos.`
+   :`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${chosenActivity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €${interest==='Sin tema'?' y sin forzar una temática concreta.':''}`;
+ document.getElementById('resultTags').innerHTML=[a+' años',state.guests+' invitados',venue?venue.name:state.place,chosenActivity,interest,state.budget+' €'].map(x=>`<span class="tag">${esc(x)}</span>`).join('');
  document.getElementById('timeline').innerHTML=plan.map((x,i)=>`<div class="activity ${i===0?'open':''}"><div class="activity-head"><div><span class="plan-role">${esc(x[0])}</span><b>${esc(x[1])}</b></div><div class="chev">⌄</div></div><div class="activity-body"><strong>Cómo hacerlo:</strong><ol>${x[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div></div>`).join('');
  document.querySelectorAll('.activity-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
  document.getElementById('readyGrid').innerHTML=readyItems().map(x=>`<div class="ready-box"><h3>${x[0]}</h3><p>${esc(x[1])}</p></div>`).join('');
