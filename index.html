@@ -3,229 +3,275 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cumpleverso — Tu cumpleaños resuelto</title>
+<title>Cumpleverso — Te montamos el cumpleaños</title>
 <style>
 :root{
-  --bg:#f7f5fb; --card:#ffffff; --text:#1e1a27; --muted:#716a7b;
-  --purple:#6f52e6; --purple2:#9a76ff; --pink:#ff6f9e; --green:#1f9d67;
-  --line:#ebe6f2; --soft:#f3effd; --yellow:#fff1b8; --shadow:0 18px 55px rgba(61,40,94,.10);
+  --bg:#f7f5fb; --card:#fff; --text:#1f1a29; --muted:#716a7b; --line:#ebe6f2;
+  --purple:#7052e7; --purple2:#9b77ff; --pink:#ff6f9e; --dark:#241d30; --shadow:0 18px 55px rgba(61,40,94,.10);
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
-linear-gradient(180deg,#fbf9ff 0%,#f7f5fb 100%);color:var(--text)}
-.wrap{width:min(1120px,calc(100% - 28px));margin:auto}
-.topbar{padding:10px 16px;text-align:center;font-size:13px;font-weight:800;background:#211b2c;color:#fff}
-header{padding:18px 0}
-.brand{display:flex;align-items:center;gap:10px;font-weight:950;font-size:24px}
-.logo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));position:relative}
-.logo:before{content:"";position:absolute;inset:8px 5px;border:2px solid #fff;border-radius:50%;transform:rotate(-22deg)}
-.logo:after{content:"★";position:absolute;right:-5px;top:-7px;color:var(--pink);font-size:17px}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fbf9ff,#f7f5fb);color:var(--text)}
+button,input{font:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}
+.topbar{padding:9px 16px;text-align:center;background:#211b2c;color:#fff;font-size:13px;font-weight:800}
+header{padding:16px 0}.nav{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:950}.logo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));position:relative}
+.logo:before{content:"";position:absolute;inset:8px 5px;border:2px solid #fff;border-radius:50%;transform:rotate(-22deg)}.logo:after{content:"★";position:absolute;right:-5px;top:-7px;color:var(--pink);font-size:17px}
+.btn{border:0;border-radius:999px;padding:13px 18px;font-weight:950;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;box-shadow:0 12px 28px rgba(112,82,231,.23)}
+.btn-light{background:#fff;border:1px solid var(--line);color:var(--text)}
+.hero{padding:42px 0 26px}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+.eyebrow{font-size:12px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;color:#694bcf}.hero h1{font-size:clamp(46px,7vw,76px);line-height:.98;letter-spacing:-.055em;margin:10px 0 16px}
+.gradient{background:linear-gradient(90deg,#6d50e3,#9c73ff,#ff6f9e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:19px;line-height:1.6;color:var(--muted);max-width:640px}.hero .btn{margin-top:8px}
+.preview{background:#fff;border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+.preview h3{font-size:24px;margin:0 0 12px}.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.preview-item{background:linear-gradient(145deg,#f4eeff,#fff6f1);padding:15px;border-radius:16px;font-weight:850}
 
-.hero{padding:10px 0 24px}
-.hero-card{background:linear-gradient(135deg,#2a203d,#533d7e);color:#fff;border-radius:32px;padding:34px;box-shadow:0 26px 70px rgba(35,29,46,.18)}
-.eyebrow{font-size:12px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;color:#d9ceff}
-.hero h1{font-size:clamp(36px,6vw,64px);line-height:1;letter-spacing:-.045em;margin:8px 0 12px}
-.hero p{color:#e2dbea;font-size:18px;line-height:1.55;margin:0;max-width:760px}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.tag{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);padding:8px 11px;border-radius:999px;font-size:13px;font-weight:800}
+.section{padding:34px 0}.section-title{margin-bottom:18px}.section-title h2{font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;margin:4px 0 8px}.section-title p{margin:0;color:var(--muted)}
+.form-shell{background:var(--dark);border-radius:32px;padding:14px;box-shadow:0 25px 65px rgba(35,29,46,.18)}
+.form-card{background:#fff;border-radius:24px;padding:24px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.field{display:grid;gap:8px}.field label{font-size:13px;font-weight:900}.field input{width:100%;border:1px solid var(--line);border-radius:15px;padding:14px 15px}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;cursor:pointer;font-weight:850;text-align:left}
+.choice.selected{background:#f4efff;border-color:#8f72ef;color:#5b42be}.choice span{margin-right:6px}
+.form-actions{display:flex;justify-content:flex-end;margin-top:18px}.form-actions .btn{padding:15px 22px}
 
-.summary{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-top:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow)}
-.card h2,.card h3{margin:0 0 12px;letter-spacing:-.03em}
-.card h2{font-size:30px}.card h3{font-size:22px}
-.timeline{display:grid;gap:10px}
-.event{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:start;padding:13px 0;border-bottom:1px solid var(--line)}
-.event:last-child{border-bottom:0}
-.time{font-weight:950;color:var(--purple)}
-.event b{display:block;margin-bottom:3px}
-.event span{color:var(--muted);font-size:14px;line-height:1.45}
-
-.total{background:linear-gradient(145deg,#f5f0ff,#fff);border-radius:20px;padding:18px}
-.total strong{font-size:40px;display:block;letter-spacing:-.04em}
-.total small{color:var(--muted)}
-.budget-list{margin-top:14px;display:grid;gap:10px}
-.budget-row{display:flex;justify-content:space-between;gap:10px;font-size:14px}
-.budget-row b{color:#4f3ab4}
-.note{margin-top:16px;background:#fff8d9;border:1px solid #f0df99;border-radius:16px;padding:13px;color:#6a5c2f;font-size:13px;line-height:1.45}
-
-.section{padding:26px 0}
-.section-title{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:16px}
-.section-title h2{font-size:34px;letter-spacing:-.04em;margin:4px 0}
-.section-title p{margin:0;color:var(--muted);max-width:630px}
-.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:950;color:#684acc}
-
-.products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.product{background:#fff;border:1px solid var(--line);border-radius:22px;padding:15px;position:relative}
-.thumb{height:108px;border-radius:17px;background:linear-gradient(145deg,#f2ebff,#fff4ea);display:grid;place-items:center;font-size:46px}
-.pill{display:inline-block;margin-top:12px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.04em;color:#6b50cf;background:#f3efff;padding:6px 8px;border-radius:999px}
-.product h4{font-size:17px;margin:8px 0 6px}
-.product p{font-size:13px;color:var(--muted);line-height:1.4;margin:0 0 10px}
-.price{font-size:20px;font-weight:950}
-.buy{margin-top:10px;width:100%;border:0;border-radius:14px;background:#1e1a27;color:#fff;padding:11px 12px;font-weight:900;cursor:pointer}
-.buy.alt{background:#f2eef9;color:#2c233a}
-.badge-price{position:absolute;right:12px;top:12px;background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:999px;font-size:11px;font-weight:950}
-
-.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.mini{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}
-.mini h3{font-size:18px;margin:0 0 8px}
-.mini ul{margin:0;padding-left:18px;color:#554f5c;line-height:1.6;font-size:14px}
-
-.cta{background:linear-gradient(135deg,#6e51df,#9b75ff);color:#fff;border-radius:28px;padding:26px;margin:20px 0 36px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.cta h2{margin:0 0 6px;font-size:30px}.cta p{margin:0;color:#e9e2fb}
-.cta button{border:0;background:#fff;color:#5c45bd;border-radius:999px;padding:14px 18px;font-weight:950;cursor:pointer}
-
-@media(max-width:900px){
-  .summary,.products,.plan-grid{grid-template-columns:1fr 1fr}
-  .products .product:last-child:nth-child(odd){grid-column:span 2}
-}
-@media(max-width:640px){
-  .hero-card{padding:24px 20px;border-radius:24px}
-  .summary,.products,.plan-grid{grid-template-columns:1fr}
-  .products .product:last-child:nth-child(odd){grid-column:auto}
-  .section-title,.cta{align-items:flex-start;flex-direction:column}
-  .event{grid-template-columns:66px 1fr}
-}
+#result{display:none}.result-hero{background:linear-gradient(135deg,#2a203d,#533d7e);color:#fff;border-radius:32px;padding:34px;box-shadow:0 26px 70px rgba(35,29,46,.18)}
+.result-hero .eyebrow{color:#d9ceff}.result-hero h1{font-size:clamp(36px,6vw,62px);line-height:1;letter-spacing:-.045em;margin:8px 0 12px}.result-hero p{color:#e2dbea;font-size:17px;line-height:1.55;margin:0;max-width:800px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.tag{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);padding:8px 11px;border-radius:999px;font-size:13px;font-weight:800}
+.summary{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-top:18px}.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow)}
+.card h2,.card h3{margin:0 0 12px;letter-spacing:-.03em}.timeline{display:grid;gap:7px}.event{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.time{font-weight:950;color:var(--purple)}.event b{display:block;margin-bottom:3px}.event span{font-size:14px;color:var(--muted);line-height:1.4}
+.total{background:linear-gradient(145deg,#f5f0ff,#fff);border-radius:18px;padding:18px}.total strong{display:block;font-size:38px;letter-spacing:-.04em}.total small{color:var(--muted)}
+.budget-list{display:grid;gap:9px;margin-top:14px}.budget-row{display:flex;justify-content:space-between;gap:12px;font-size:14px}.budget-row b{color:#513ab6}
+.note{margin-top:14px;background:#fff7dc;border:1px solid #efdf9d;border-radius:14px;padding:12px;font-size:13px;color:#695d33;line-height:1.45}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.product{background:#fff;border:1px solid var(--line);border-radius:22px;padding:15px;position:relative}
+.thumb{height:104px;border-radius:16px;background:linear-gradient(145deg,#f2ebff,#fff4ea);display:grid;place-items:center;font-size:44px}
+.pill{display:inline-block;margin-top:11px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.04em;color:#6b50cf;background:#f3efff;padding:6px 8px;border-radius:999px}
+.product h4{font-size:17px;margin:8px 0 6px}.product p{font-size:13px;color:var(--muted);line-height:1.4;margin:0 0 10px}.price{font-size:20px;font-weight:950}.badge-price{position:absolute;right:12px;top:12px;background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:999px;font-size:11px;font-weight:950}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.mini{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.mini h3{font-size:18px;margin:0 0 8px}.mini ul{margin:0;padding-left:18px;color:#554f5c;line-height:1.6;font-size:14px}
+.cta{background:linear-gradient(135deg,#6e51df,#9b75ff);color:#fff;border-radius:28px;padding:24px;margin:20px 0 36px;display:flex;justify-content:space-between;align-items:center;gap:18px}.cta h2{margin:0 0 5px}.cta p{margin:0;color:#e8e0fb}.cta button{background:#fff;color:#5b43b9}
+@media(max-width:900px){.hero-grid,.summary{grid-template-columns:1fr}.grid,.products,.plan-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.hero{padding-top:26px}.hero h1{font-size:48px}.preview-grid,.grid,.products,.plan-grid{grid-template-columns:1fr}.options{grid-template-columns:1fr 1fr}.result-hero{padding:24px 20px}.cta{flex-direction:column;align-items:flex-start}.nav .btn{display:none}}
 </style>
 </head>
 <body>
-<div class="topbar">🎉 Ejemplo de resultado final de Cumpleverso</div>
-<header><div class="wrap"><div class="brand"><span class="logo"></span>Cumpleverso</div></div></header>
+<div class="topbar">🎉 6 datos y te montamos el cumpleaños</div>
+<header><div class="wrap nav"><div class="brand"><span class="logo"></span>Cumpleverso</div><a class="btn btn-primary" href="#crear">Crear cumpleaños</a></div></header>
 
 <main>
-<section class="hero">
-<div class="wrap">
-  <div class="hero-card">
-    <div class="eyebrow">Tu cumpleaños ya está montado</div>
-    <h1>Champions en casa ⚽</h1>
-    <p>Un cumpleaños de fútbol para 15 niños de 8 años, pensado para que tengas claro qué hacer, cuánto gastar y qué comprar sin seguir buscando.</p>
-    <div class="tags">
-      <span class="tag">8 años</span>
-      <span class="tag">15 niños</span>
-      <span class="tag">En casa</span>
-      <span class="tag">Fútbol</span>
-      <span class="tag">Presupuesto: 200 €</span>
-      <span class="tag">Duración: 2 h 30 min</span>
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <div class="eyebrow">Menos buscar. Más celebrar.</div>
+    <h1>Dime quién cumple años y <span class="gradient">te monto el cumpleaños.</span></h1>
+    <p>Tema, horario, juegos, comida, decoración, lista de compra y regalos. Todo en una propuesta concreta para que no tengas que ir saltando de web en web.</p>
+    <a href="#crear" class="btn btn-primary">Crear mi cumpleaños →</a>
+  </div>
+  <div class="preview">
+    <h3>Lo que recibirás</h3>
+    <div class="preview-grid">
+      <div class="preview-item">🕒 Plan minuto a minuto</div>
+      <div class="preview-item">🎲 Juegos concretos</div>
+      <div class="preview-item">🍕 Comida calculada</div>
+      <div class="preview-item">🎈 Decoración</div>
+      <div class="preview-item">🛒 6 compras clave</div>
+      <div class="preview-item">🎁 6 regalos</div>
     </div>
+  </div>
+</div></section>
+
+<section class="section" id="crear"><div class="wrap">
+  <div class="section-title">
+    <div class="eyebrow">Crea tu propuesta</div>
+    <h2>Solo necesitamos 6 datos</h2>
+    <p>Elige lo básico. La propuesta se genera al momento.</p>
+  </div>
+  <div class="form-shell">
+    <div class="form-card">
+      <div class="grid">
+        <div class="field"><label>Edad</label><input id="age" type="number" min="1" max="100" value="8"></div>
+        <div class="field">
+          <label>Invitados</label>
+          <div class="options" data-key="guests">
+            <button class="choice" data-value="8">1–10</button><button class="choice selected" data-value="15">11–20</button>
+            <button class="choice" data-value="30">21–40</button><button class="choice" data-value="45">+40</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Lugar</label>
+          <div class="options" data-key="place">
+            <button class="choice selected" data-value="Casa">🏠 Casa</button><button class="choice" data-value="Exterior">🌳 Exterior</button>
+            <button class="choice" data-value="Local">🎈 Local</button><button class="choice" data-value="Restaurante">🍕 Restaurante</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Presupuesto</label>
+          <div class="options" data-key="budget">
+            <button class="choice" data-value="100">Hasta 100 €</button><button class="choice selected" data-value="200">100–250 €</button>
+            <button class="choice" data-value="380">250–500 €</button><button class="choice" data-value="650">+500 €</button>
+          </div>
+        </div>
+        <div class="field" style="grid-column:span 2">
+          <label>Qué le gusta</label>
+          <div class="options" data-key="interest">
+            <button class="choice selected" data-value="Fútbol">⚽ Fútbol</button>
+            <button class="choice" data-value="Videojuegos">🎮 Videojuegos</button>
+            <button class="choice" data-value="Ciencia">🔭 Ciencia</button>
+            <button class="choice" data-value="Manualidades">🎨 Manualidades</button>
+            <button class="choice" data-value="Música">🎵 Música</button>
+            <button class="choice" data-value="Cine">🎬 Cine y series</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions"><button class="btn btn-primary" id="make">Ver mi propuesta →</button></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section" id="result"><div class="wrap">
+  <div class="result-hero">
+    <div class="eyebrow">Tu cumpleaños ya está montado</div>
+    <h1 id="title">Champions en casa ⚽</h1>
+    <p id="intro"></p>
+    <div class="tags" id="tags"></div>
   </div>
 
   <div class="summary">
     <div class="card">
       <h2>El plan, minuto a minuto</h2>
-      <div class="timeline">
-        <div class="event"><div class="time">16:30</div><div><b>Llegada + reparto de equipos</b><span>Dos equipos, pulseras o petos de colores y música de fondo.</span></div></div>
-        <div class="event"><div class="time">16:45</div><div><b>Reto de penaltis</b><span>Primera actividad rápida para que todos participen desde el principio.</span></div></div>
-        <div class="event"><div class="time">17:05</div><div><b>Mini Champions 3x3</b><span>Partidos cortos, rotaciones rápidas y marcador visible.</span></div></div>
-        <div class="event"><div class="time">17:45</div><div><b>Merienda</b><span>Pizza, snacks, fruta, agua y refrescos. Sin complicaciones.</span></div></div>
-        <div class="event"><div class="time">18:05</div><div><b>Quiz de fútbol</b><span>10 preguntas por equipos. Premio simbólico para el equipo ganador.</span></div></div>
-        <div class="event"><div class="time">18:25</div><div><b>Tarta + fotos</b><span>Photocall, vela, foto de grupo y entrega de medallas.</span></div></div>
-        <div class="event"><div class="time">19:00</div><div><b>Fin</b><span>Duración suficiente para que no se haga largo ni se descontrole.</span></div></div>
-      </div>
+      <div class="timeline" id="timeline"></div>
     </div>
-
     <div class="card">
       <h3>Presupuesto orientativo</h3>
-      <div class="total"><small>Total previsto</small><strong>184 €</strong><small>Te deja margen dentro de los 200 €.</small></div>
-      <div class="budget-list">
-        <div class="budget-row"><span>Comida y bebida</span><b>68 €</b></div>
-        <div class="budget-row"><span>Decoración</span><b>29 €</b></div>
-        <div class="budget-row"><span>Juegos / premios</span><b>35 €</b></div>
-        <div class="budget-row"><span>Material reutilizable</span><b>52 €</b></div>
-      </div>
-      <div class="note"><b>Clave:</b> no necesitas comprarlo todo. Si ya tienes balón, altavoz o portería, el coste baja bastante.</div>
+      <div class="total"><small>Total previsto</small><strong id="total">184 €</strong><small id="margin"></small></div>
+      <div class="budget-list" id="budgetList"></div>
+      <div class="note"><b>Clave:</b> si ya tienes parte del material, el coste baja. Cumpleverso prioriza compras que puedan reutilizarse.</div>
     </div>
-  </div>
-</div>
-</section>
-
-<section class="section">
-<div class="wrap">
-  <div class="section-title">
-    <div><div class="kicker">Compra exactamente esto</div><h2>6 cosas para montar la fiesta</h2></div>
-    <p>No una lista infinita. Básicos, un producto de mayor importe y una opción menos típica.</p>
   </div>
 
-  <div class="products">
-    <div class="product">
-      <div class="badge-price">Básico</div><div class="thumb">🎈</div>
-      <span class="pill">Decoración</span><h4>Pack de globos + guirnalda fútbol</h4>
-      <p>Para decorar la zona principal y la mesa de tarta sin llenar toda la casa.</p><div class="price">≈ 14 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-    <div class="product">
-      <div class="badge-price">Útil</div><div class="thumb">🥅</div>
-      <span class="pill">Juego</span><h4>Portería plegable</h4>
-      <p>Sirve para penaltis y mini partidos. Además queda para reutilizar después.</p><div class="price">≈ 39 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-    <div class="product">
-      <div class="badge-price">Popular</div><div class="thumb">⚽</div>
-      <span class="pill">Actividad</span><h4>Balón de fútbol resistente</h4>
-      <p>Mejor uno bueno que varios baratos. También puede quedar como regalo.</p><div class="price">≈ 24 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-    <div class="product">
-      <div class="badge-price">Visual</div><div class="thumb">📸</div>
-      <span class="pill">Fotos</span><h4>Photocall de fútbol</h4>
-      <p>Da sensación de fiesta montada y funciona muy bien en las fotos finales.</p><div class="price">≈ 18 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-    <div class="product">
-      <div class="badge-price">Bajo coste</div><div class="thumb">🥇</div>
-      <span class="pill">Premios</span><h4>20 medallas infantiles</h4>
-      <p>Una para cada niño. Evita que solo el equipo ganador se lleve algo.</p><div class="price">≈ 11 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-    <div class="product">
-      <div class="badge-price">Menos típico</div><div class="thumb">📋</div>
-      <span class="pill">Organización</span><h4>Pizarra pequeña de marcador</h4>
-      <p>Hace que la Mini Champions parezca un evento real y ayuda a ordenar los partidos.</p><div class="price">≈ 16 €</div>
-      <button class="buy">Ver producto</button>
-    </div>
-  </div>
-</div>
-</section>
+  <section class="section">
+    <div class="section-title"><div><div class="eyebrow">Compra exactamente esto</div><h2>6 cosas para montar la fiesta</h2></div></div>
+    <div class="products" id="partyProducts"></div>
+  </section>
 
-<section class="section">
-<div class="wrap">
-  <div class="section-title">
-    <div><div class="kicker">Para no pensar más</div><h2>Comida, decoración y preparación</h2></div>
-    <p>Lo que haríamos para mantenerlo sencillo y que funcione.</p>
-  </div>
-  <div class="plan-grid">
-    <div class="mini"><h3>🍕 Comida</h3><ul><li>5 pizzas grandes</li><li>2 bolsas grandes de snacks</li><li>Brochetas de fruta</li><li>Agua + refrescos</li><li>Tarta para 18–20 raciones</li></ul></div>
-    <div class="mini"><h3>🎈 Decoración</h3><ul><li>Dos colores: verde + negro</li><li>Globos solo en zona principal</li><li>Photocall en una pared</li><li>Mesa de tarta sencilla</li><li>Nada de llenar toda la casa</li></ul></div>
-    <div class="mini"><h3>✅ Preparación</h3><ul><li>Dejar equipos hechos antes</li><li>Preparar marcador</li><li>Poner premios en una caja</li><li>Tener plan B interior</li><li>Playlist lista antes de que lleguen</li></ul></div>
-  </div>
-</div>
-</section>
+  <section class="section">
+    <div class="section-title"><div><div class="eyebrow">Para no pensar más</div><h2>Comida, decoración y preparación</h2></div></div>
+    <div class="plan-grid">
+      <div class="mini"><h3>🍕 Comida</h3><ul id="food"></ul></div>
+      <div class="mini"><h3>🎈 Decoración</h3><ul id="decor"></ul></div>
+      <div class="mini"><h3>✅ Preparación</h3><ul id="prep"></ul></div>
+    </div>
+  </section>
 
-<section class="section">
-<div class="wrap">
-  <div class="section-title">
-    <div><div class="kicker">Regalos que encajan</div><h2>6 ideas para un niño de 8 años al que le gusta el fútbol</h2></div>
-    <p>Mezcla de precios y dos opciones menos previsibles para evitar regalar algo que ya tenga.</p>
-  </div>
+  <section class="section">
+    <div class="section-title"><div><div class="eyebrow">Regalos que encajan</div><h2 id="giftHeading">6 ideas de regalo</h2></div></div>
+    <div class="products" id="giftProducts"></div>
+  </section>
 
-  <div class="products">
-    <div class="product"><div class="badge-price">Importe alto</div><div class="thumb">🧱</div><span class="pill">Principal</span><h4>LEGO de fútbol / estadio</h4><p>Regalo grande, visual y con bastante recorrido.</p><div class="price">€€€</div><button class="buy alt">Ver opción</button></div>
-    <div class="product"><div class="badge-price">Clásico</div><div class="thumb">⚽</div><span class="pill">Seguro</span><h4>Balón de gama media</h4><p>Una opción útil si sabes que necesita renovar el suyo.</p><div class="price">€€</div><button class="buy alt">Ver opción</button></div>
-    <div class="product"><div class="badge-price">Deseado</div><div class="thumb">👕</div><span class="pill">Personal</span><h4>Camiseta de su equipo</h4><p>Funciona mejor si conoces bien el equipo y jugador favorito.</p><div class="price">€€€</div><button class="buy alt">Ver opción</button></div>
-    <div class="product"><div class="badge-price">Activo</div><div class="thumb">🥅</div><span class="pill">Exterior</span><h4>Mini portería plegable</h4><p>Regalo práctico que además se puede aprovechar durante la fiesta.</p><div class="price">€€</div><button class="buy alt">Ver opción</button></div>
-    <div class="product"><div class="badge-price">Experiencia</div><div class="thumb">🎟️</div><span class="pill">Diferente</span><h4>Visita a estadio / museo</h4><p>Una alternativa a regalar otro objeto más.</p><div class="price">€€€</div><button class="buy alt">Ver opción</button></div>
-    <div class="product"><div class="badge-price">Menos típico</div><div class="thumb">📊</div><span class="pill">Curioso</span><h4>Juego táctico o de estadísticas</h4><p>Para niños muy futboleros que ya tienen balón, camiseta y guantes.</p><div class="price">€€</div><button class="buy alt">Ver opción</button></div>
-  </div>
-</div>
-</section>
-
-<section>
-<div class="wrap">
   <div class="cta">
-    <div><h2>Esto es lo que debería hacer Cumpleverso.</h2><p>Convertir seis datos en un plan ejecutable, no en otra página de ideas.</p></div>
-    <button onclick="alert('En la web real, aquí empezarías tu propio cumpleaños.')">Crear el mío</button>
+    <div><h2>¿Quieres probar otra combinación?</h2><p>Cambia edad, presupuesto, lugar o gustos y genera una propuesta distinta.</p></div>
+    <button class="btn" onclick="document.getElementById('crear').scrollIntoView({behavior:'smooth'})">Cambiar datos</button>
   </div>
-</div>
-</section>
+</div></section>
 </main>
+
+<script>
+const state={guests:15,place:'Casa',budget:200,interest:'Fútbol'};
+document.querySelectorAll('.options').forEach(group=>{
+  group.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.preventDefault();
+      group.querySelectorAll('.choice').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state[group.dataset.key]=isNaN(btn.dataset.value)?btn.dataset.value:Number(btn.dataset.value);
+    });
+  });
+});
+
+function theme(i,place){
+  const m={
+    'Fútbol':['Champions','⚽'],'Videojuegos':['Gaming Challenge','🎮'],'Ciencia':['Laboratorio loco','🔭'],
+    'Manualidades':['Taller creativo','🎨'],'Música':['Mini Festival','🎵'],'Cine':['Noche de estreno','🎬']
+  };
+  return [(m[i]||['Aventura','🎉'])[0] + (place==='Casa'?' en casa':''),(m[i]||['','🎉'])[1]];
+}
+function timeline(age,interest){
+  const young=age<=12;
+  const adult=age>=18;
+  if(adult) return [
+    ['19:00','Llegada + primera copa','Música suave y bienvenida.'],
+    ['19:30','Picoteo','Aperitivos fáciles de compartir.'],
+    ['20:15','Actividad sorpresa','Juego, quiz o dinámica corta según gustos.'],
+    ['21:00','Cena informal','Comida sencilla y fácil de servir.'],
+    ['22:00','Tarta / brindis','Fotos, brindis y momento central.'],
+    ['22:30','Música y sobremesa','Sin actividades forzadas, ambiente libre.']
+  ];
+  return [
+    ['16:30','Llegada + equipos','Bienvenida rápida para que todos entren en dinámica.'],
+    ['16:45',interest==='Fútbol'?'Reto de penaltis':'Reto inicial','Actividad corta para romper el hielo.'],
+    ['17:05',interest==='Fútbol'?'Mini Champions 3x3':'Actividad principal','Bloque de 35–40 min con rotaciones rápidas.'],
+    ['17:45','Merienda','Comida sencilla y fácil de servir.'],
+    ['18:05',interest==='Videojuegos'?'Quiz gaming':interest==='Ciencia'?'Mini experimento':'Quiz por equipos','10–15 minutos, con premio simbólico.'],
+    ['18:25','Tarta + fotos','Momento central, foto de grupo y detalle final.'],
+    ['19:00','Fin','Duración suficiente para que no se haga largo.']
+  ];
+}
+function partyItems(interest){
+  const common=[
+    ['🎈','Básico','Pack de globos + guirnalda','≈ 14 €'],
+    ['📸','Visual','Kit de photocall','≈ 18 €'],
+    ['🥇','Bajo coste','Premios / medallas','≈ 11 €']
+  ];
+  const spec={
+    'Fútbol':[['🥅','Útil','Portería plegable','≈ 39 €'],['⚽','Popular','Balón resistente','≈ 24 €'],['📋','Menos típico','Pizarra de marcador','≈ 16 €']],
+    'Videojuegos':[['🎮','Principal','Mando extra','≈ 45 €'],['💡','Ambiente','Luces LED','≈ 22 €'],['🏆','Menos típico','Mini trofeo gaming','≈ 15 €']],
+    'Ciencia':[['🧪','Principal','Kit de experimentos','≈ 35 €'],['🥽','Actividad','Gafas / material seguro','≈ 15 €'],['🌌','Menos típico','Proyector de estrellas','≈ 28 €']],
+    'Manualidades':[['🎨','Principal','Kit creativo','≈ 30 €'],['✂️','Material','Pack manualidades','≈ 18 €'],['🖼️','Menos típico','Marcos para decorar','≈ 16 €']],
+    'Música':[['🔊','Principal','Altavoz Bluetooth','≈ 45 €'],['💡','Ambiente','Luces de fiesta','≈ 22 €'],['🎤','Menos típico','Micrófono karaoke','≈ 28 €']],
+    'Cine':[['📽️','Principal','Mini proyector / pantalla','≈ 55 €'],['🍿','Ambiente','Cajas de palomitas','≈ 12 €'],['🎟️','Menos típico','Entradas decorativas','≈ 10 €']]
+  };
+  return [...common,...(spec[interest]||spec.Fútbol)];
+}
+function gifts(age,interest){
+  const map={
+    'Fútbol':[['🧱','Importe alto','LEGO / estadio de fútbol','€€€'],['⚽','Clásico','Balón de calidad','€€'],['👕','Personal','Camiseta de su equipo','€€€'],['🥅','Activo','Mini portería','€€'],['🎟️','Experiencia','Visita a estadio / museo','€€€'],['📊','Menos típico','Juego táctico / estadísticas','€€']],
+    'Videojuegos':[['🎮','Importe alto','Mando premium','€€€'],['🎧','Popular','Auriculares gaming','€€'],['💡','Ambiente','Luz RGB','€'],['🕹️','Clásico','Juego / tarjeta','€€'],['⌨️','Upgrade','Teclado / ratón','€€€'],['🧩','Menos típico','Construcción gaming','€€']],
+    'Ciencia':[['🔭','Importe alto','Telescopio inicial','€€€'],['🧪','Curioso','Kit de ciencia','€€'],['🤖','Tecnología','Robot educativo','€€€'],['📚','Visual','Libro de ciencia','€'],['🌌','Ambiente','Proyector de estrellas','€€'],['🧲','Menos típico','Kit magnético','€€']],
+    'Manualidades':[['🎨','Principal','Maletín artístico','€€€'],['🧵','Creativo','Kit de pulseras','€'],['🖌️','Clásico','Set de pintura','€€'],['🧱','Construcción','LEGO creativo','€€€'],['📓','Personal','Cuaderno creativo','€'],['🪵','Menos típico','Kit de madera / grabado','€€']],
+    'Música':[['🎧','Principal','Auriculares','€€€'],['🎤','Divertido','Micrófono karaoke','€€'],['🔊','Útil','Altavoz Bluetooth','€€€'],['🎹','Creativo','Mini teclado','€€'],['🎟️','Experiencia','Entrada concierto / musical','€€€'],['🎛️','Menos típico','Mini mesa de mezclas','€€']],
+    'Cine':[['📽️','Principal','Mini proyector','€€€'],['🎬','Clásico','Pack película / saga','€€'],['🍿','Ambiente','Máquina de palomitas','€€'],['🧱','Colección','LEGO de película','€€€'],['🎟️','Experiencia','Entradas de cine','€€'],['🖼️','Menos típico','Póster / lámina especial','€€']]
+  };
+  if(age>=18) return [['🎧','Tecnología','Auriculares','€€€'],['☕','Útil','Cafetera / accesorio gourmet','€€'],['📚','Personal','Libro especial','€'],['🎟️','Experiencia','Experiencia para dos','€€€'],['⌚','Principal','Accesorio premium','€€€'],['🖼️','Menos típico','Detalle personalizado','€€']];
+  return map[interest]||map.Fútbol;
+}
+function cardHtml(x){return `<div class="product"><div class="badge-price">${x[1]}</div><div class="thumb">${x[0]}</div><span class="pill">${x[1]}</span><h4>${x[2]}</h4><p>Seleccionado para este tipo de celebración.</p><div class="price">${x[3]}</div></div>`}
+function list(items){return items.map(x=>`<li>${x}</li>`).join('')}
+
+document.getElementById('make').addEventListener('click',()=>{
+  const age=Number(document.getElementById('age').value)||8;
+  const [th,emoji]=theme(state.interest,state.place);
+  const guests=state.guests, budget=state.budget;
+  const est=Math.round(budget*0.92);
+  document.getElementById('title').textContent=`${th} ${emoji}`;
+  document.getElementById('intro').textContent=`Una propuesta para ${guests} invitados, pensada para ${age} años, en ${state.place.toLowerCase()}, con un presupuesto de hasta ${budget} €.`;
+  document.getElementById('tags').innerHTML=[`${age} años`,`${guests} invitados`,state.place,state.interest,`Presupuesto: ${budget} €`].map(x=>`<span class="tag">${x}</span>`).join('');
+  document.getElementById('timeline').innerHTML=timeline(age,state.interest).map(x=>`<div class="event"><div class="time">${x[0]}</div><div><b>${x[1]}</b><span>${x[2]}</span></div></div>`).join('');
+  document.getElementById('total').textContent=`${est} €`;
+  document.getElementById('margin').textContent=`Te deja unos ${Math.max(0,budget-est)} € de margen.`;
+  const cats=[['Comida y bebida',.37],['Decoración',.16],['Juegos / premios',.21],['Material / extras',.18]];
+  document.getElementById('budgetList').innerHTML=cats.map(x=>`<div class="budget-row"><span>${x[0]}</span><b>${Math.round(budget*x[1])} €</b></div>`).join('');
+  document.getElementById('partyProducts').innerHTML=partyItems(state.interest).map(cardHtml).join('');
+
+  const food = age<13 ? [`${Math.max(3,Math.ceil(guests/3))} pizzas grandes o equivalente`,`Snacks fáciles de coger`,`Fruta cortada`,`Agua y refrescos`,`Tarta para ${guests+3} raciones`] : ['Aperitivos variados','Picoteo fácil de servir','Bebidas frías','Opción sin alcohol','Tarta o postre central'];
+  document.getElementById('food').innerHTML=list(food);
+  document.getElementById('decor').innerHTML=list(['Dos colores principales','Decorar solo la zona central','Photocall sencillo','Mesa de tarta como punto focal','Evitar recargar el espacio']);
+  document.getElementById('prep').innerHTML=list(['Dejar materiales preparados','Tener música lista','Preparar premios / detalles','Plan B por si falla una actividad','Tener comida y bebida fría antes de empezar']);
+
+  document.getElementById('giftHeading').textContent=`6 ideas para ${age} años · ${state.interest}`;
+  document.getElementById('giftProducts').innerHTML=gifts(age,state.interest).map(cardHtml).join('');
+  document.getElementById('result').style.display='block';
+  setTimeout(()=>document.getElementById('result').scrollIntoView({behavior:'smooth'}),60);
+});
+</script>
 </body>
 </html>
