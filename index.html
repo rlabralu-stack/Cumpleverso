@@ -56,6 +56,11 @@ header{padding:16px 0}.nav{display:flex;align-items:center;justify-content:space
 .disclaimer{color:var(--muted);font-size:12px;line-height:1.5;margin-top:14px}
 @media(max-width:900px){.hero-grid,.path-grid{grid-template-columns:1fr}.activity-proposals,.products,.plan-grid,.ready-grid,.planb-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.hero{padding-top:26px}.hero h1{font-size:48px}.preview-grid,.fields,.activity-proposals,.products,.plan-grid,.ready-grid,.planb-grid,.checklist,.budget{grid-template-columns:1fr}.field.full{grid-column:auto}.options,.options.three{grid-template-columns:1fr 1fr}.result-hero{padding:24px 20px}.nav .btn{display:none}}
+
+.custom-activity-box{display:none;margin-top:12px}
+.custom-activity-box.show{display:block}
+.custom-activity-box input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px}
+
 </style>
 </head>
 <body>
@@ -101,6 +106,10 @@ header{padding:16px 0}.nav{display:flex;align-items:center;justify-content:space
 <div id="activityStep">
   <div class="section-title"><div class="eyebrow">Cumpleverso propone</div><h2>Elige una actividad principal</h2><p>Estas opciones cambian según edad, lugar y tema.</p></div>
   <div class="activity-proposals" id="activityProposals"></div>
+  <div class="custom-activity-box" id="customActivityBox">
+    <input id="customActivityInput" placeholder="Escribe la actividad: paintball, bolera, parque de trampolines, cine...">
+    <div class="hint">Cumpleverso adaptará el resto del plan alrededor de esta actividad.</div>
+  </div>
   <div class="form-actions"><button id="makeCelebration" class="btn btn-primary">Crear propuesta completa →</button></div>
 </div>
 </div></div>
@@ -232,15 +241,40 @@ function proposedActivities(interest,place,a){
 document.getElementById('suggestActivities').onclick=()=>{
  const interest=effectiveInterest(),arr=proposedActivities(interest,state.place,age());
  const box=document.getElementById('activityProposals');
- box.innerHTML=arr.map((x,i)=>`<button class="activity-proposal ${i===0?'selected':''}" data-value="${esc(x[0])}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></button>`).join('');
+ box.innerHTML=arr.map((x,i)=>`<button class="activity-proposal ${i===0?'selected':''}" data-value="${esc(x[0])}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></button>`).join('')+
+   `<button class="activity-proposal" data-value="__OTHER__"><b>✍️ Otra actividad</b><span>Escribe cualquier actividad: paintball, bolera, trampolines, cine...</span></button>`+
+   `<button class="activity-proposal" data-value="__NONE__"><b>🚫 Sin actividad principal</b><span>Para una celebración centrada en reunirse, comer, música, charla o juegos sueltos.</span></button>`;
  state.activity=arr[0][0];
- box.querySelectorAll('.activity-proposal').forEach(b=>b.onclick=()=>{box.querySelectorAll('.activity-proposal').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');state.activity=b.dataset.value});
+ document.getElementById('customActivityBox').classList.remove('show');
+ box.querySelectorAll('.activity-proposal').forEach(b=>b.onclick=()=>{
+   box.querySelectorAll('.activity-proposal').forEach(x=>x.classList.remove('selected'));
+   b.classList.add('selected');
+   document.getElementById('customActivityBox').classList.toggle('show',b.dataset.value==='__OTHER__');
+   state.activity=b.dataset.value;
+ });
  document.getElementById('activityStep').style.display='block';
  setTimeout(()=>document.getElementById('activityStep').scrollIntoView({behavior:'smooth',block:'center'}),50);
 };
 
+function effectiveChosenActivity(){
+ if(state.activity==='__OTHER__'){
+   return document.getElementById('customActivityInput').value.trim()||'Actividad personalizada';
+ }
+ if(state.activity==='__NONE__') return 'Sin actividad principal';
+ return state.activity;
+}
+
 function planFor(interest,activity){
  const il=interest.toLowerCase(),al=activity.toLowerCase();
+
+ if(al==='sin actividad principal'){
+   return [
+    ['Inicio','Bienvenida tranquila',['Prepara música de fondo, bebidas y una zona clara donde dejar regalos o chaquetas.','No hagas equipos ni expliques reglas al llegar.','Deja 15–20 minutos para que todos se acomoden y hablen.']],
+    ['Opcional','Juego suave de 10 minutos',['Ten preparado un juego muy sencillo por si el ambiente lo pide: mímica, preguntas rápidas, cartas o quiz.','No lo presentes como “actividad principal”; úsalo solo si hace falta.']],
+    ['Momento principal','Comida / merienda + celebración',['Sirve primero comida y bebida.','Después haz tarta, brindis, fotos o entrega de regalos.','Mantén este momento como el centro de la celebración.']],
+    ['Comodín','Plan rápido si baja el ambiente',['Usa un quiz de 10 preguntas sobre el homenajeado, música, cine o el tema elegido.','1 punto por respuesta y sin eliminaciones.']]
+   ];
+ }
  if(il.includes('fútbol')||il.includes('futbol')){
    if(al.includes('gymkana'))return[
     ['Actividad principal','Gymkana de fútbol de 4 pruebas',['1. Penaltis: 5 tiros por equipo, un jugador distinto por ronda.','2. Conducción: zigzag entre 6 conos y vuelta.','3. Precisión: 3 tiros a zonas de 1, 2 y 3 puntos.','4. Quiz: 8 preguntas de fútbol.','Suma los puntos de las cuatro pruebas.']],
@@ -280,10 +314,10 @@ function planFor(interest,activity){
    ['Comodín','Caja misteriosa',['5 objetos dentro.','Solo pueden tocarlos.','Deben identificar al menos 4.']]
  ];
  return[
-   ['Actividad principal',activity,['Prepara la actividad completa antes de que lleguen.','Explícala en menos de un minuto.','Haz equipos pequeños.','Marca un final claro con puntuación o reto.']],
-   ['Apoyo','Reto de '+interest,['5 pruebas de 2–3 minutos.','1 punto por prueba superada.']],
-   ['Apoyo','Quiz de '+interest,['10 preguntas: 6 fáciles, 3 medias y 1 difícil.','30 segundos por pregunta.']],
-   ['Comodín','Mímica temática',['12 palabras relacionadas con '+interest+'.','30 segundos por turno.']]
+   ['Actividad principal',activity,['Confirma reserva, normas, duración y desplazamiento si la actividad es fuera de casa.','Haz que todos sepan dónde y cuándo empieza.','Ten preparada una alternativa simple por si hay retrasos o alguien no puede participar.']],
+   ['Antes o después','Reto corto de '+interest,['Prepara un juego de 10–15 minutos relacionado con '+interest+'.','Que no necesite mucho material ni montaje.']],
+   ['Momento tranquilo','Quiz de '+interest,['10 preguntas: 6 fáciles, 3 medias y 1 difícil.','30 segundos por pregunta.','1 punto por acierto.']],
+   ['Comodín','Mímica temática',['12 palabras relacionadas con '+interest+'.','30 segundos por turno.','Úsalo solo si sobra tiempo o la actividad principal termina antes.']]
  ];
 }
 
@@ -309,14 +343,19 @@ function planBItems(){
 }
 function shoppingItems(interest,activity){
  const g=state.guests;
- return[
+ const base=[
   [g<=10?'1':'2','packs de vasos y platos','Menaje para todos los invitados.','vasos platos fiesta'],
   [Math.max(2,Math.ceil(g/8)),'bolsas grandes de snacks','Para tener picoteo suficiente sin pasarse.','snacks fiesta pack'],
   [Math.max(2,Math.ceil(g/6)),'packs de bebidas / zumos','Agua, refrescos y zumos.','bebidas refrescos zumos pack'],
-  ['1','pack de decoración '+interest,'Solo para la zona principal y mesa de tarta.','decoración '+interest+' cumpleaños'],
-  ['1','kit para '+activity,'Material principal de la actividad.','material '+activity],
-  [g,'medallas o pequeños detalles','Uno por invitado para cerrar la fiesta.','medallas niños fiesta']
+  ['1','pack de decoración '+interest,'Solo para la zona principal y mesa de tarta.','decoración '+interest+' cumpleaños']
  ];
+ if(activity!=='Sin actividad principal'){
+   base.push(['1','kit / material para '+activity,'Solo lo necesario para la actividad principal.','material '+activity]);
+ } else {
+   base.push(['1','juego de cartas o quiz opcional','Solo como comodín si el ambiente lo pide.','juego cartas fiesta grupo']);
+ }
+ base.push([g,'pequeños detalles o recuerdos','Uno por invitado para cerrar la celebración.','detalles fiesta invitados']);
+ return base;
 }
 function budgetItems(){
  const b=state.budget;
@@ -362,16 +401,16 @@ function renderAutoGifts(){
 }
 
 document.getElementById('makeCelebration').onclick=()=>{
- if(!state.activity){alert('Primero elige una actividad principal.');return}
- const a=age(),interest=effectiveInterest(),plan=planFor(interest,state.activity);
+ if(!state.activity){alert('Primero elige una opción de actividad.');return}
+ const a=age(),interest=effectiveInterest(),chosenActivity=effectiveChosenActivity(),plan=planFor(interest,chosenActivity);
  document.getElementById('resultTitle').textContent=`${state.occasion}: ${interest}`;
- document.getElementById('resultIntro').textContent=`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${state.activity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €.`;
- document.getElementById('resultTags').innerHTML=[a+' años',state.guests+' invitados',state.place,state.activity,interest,state.budget+' €'].map(x=>`<span class="tag">${esc(x)}</span>`).join('');
+ document.getElementById('resultIntro').textContent=`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${chosenActivity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €.`;
+ document.getElementById('resultTags').innerHTML=[a+' años',state.guests+' invitados',state.place,chosenActivity,interest,state.budget+' €'].map(x=>`<span class="tag">${esc(x)}</span>`).join('');
  document.getElementById('timeline').innerHTML=plan.map((x,i)=>`<div class="activity ${i===0?'open':''}"><div class="activity-head"><div><span class="plan-role">${esc(x[0])}</span><b>${esc(x[1])}</b></div><div class="chev">⌄</div></div><div class="activity-body"><strong>Cómo hacerlo:</strong><ol>${x[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div></div>`).join('');
  document.querySelectorAll('.activity-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
  document.getElementById('readyGrid').innerHTML=readyItems().map(x=>`<div class="ready-box"><h3>${x[0]}</h3><p>${esc(x[1])}</p></div>`).join('');
  document.getElementById('planBGrid').innerHTML=planBItems().map(x=>`<div class="planb"><h3>${x[0]}</h3><p>${esc(x[1])}</p></div>`).join('');
- document.getElementById('shoppingChecklist').innerHTML=shoppingItems(interest,state.activity).map(x=>`<div class="check-item"><div class="qty">${esc(x[0])}</div><div><h4>${esc(x[1])}</h4><p>${esc(x[2])}</p><a class="amazon" href="${amazon(x[3])}" target="_blank" rel="noopener noreferrer">Ver en Amazon →</a></div></div>`).join('');
+ document.getElementById('shoppingChecklist').innerHTML=shoppingItems(interest,chosenActivity).map(x=>`<div class="check-item"><div class="qty">${esc(x[0])}</div><div><h4>${esc(x[1])}</h4><p>${esc(x[2])}</p><a class="amazon" href="${amazon(x[3])}" target="_blank" rel="noopener noreferrer">Ver en Amazon →</a></div></div>`).join('');
  document.getElementById('budgetGrid').innerHTML=budgetItems().map(x=>`<div><span>${x[0]}</span><b>≈ ${x[1]} €</b></div>`).join('');
  ownedGiftKeys.clear();renderAutoGifts();
  document.getElementById('refreshGifts').onclick=renderAutoGifts;
