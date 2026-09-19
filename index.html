@@ -174,7 +174,7 @@ const giftState={budget:50,interest:'Fútbol'};
 let ownedGiftKeys=new Set();
 
 function makeChoiceBox(box,arr,onSelect,extras=true){
- box.innerHTML=arr.map((x,i)=>`<button class="choice ${i===0?'selected':''}" data-value="${x[0]}">${x[1]} ${x[0]}</button>`).join('')+(extras?`<button class="choice" data-value="__OTHER__">✍️ Otro…</button><button class="choice" data-value="__UNKNOWN__">🤷 No lo sé</button>`:'');
+ box.innerHTML=arr.map((x,i)=>`<button class="choice ${i===0?'selected':''}" data-value="${x[0]}">${x[1]} ${x[0]}</button>`).join('')+(extras?`<button class="choice" data-value="__OTHER__">✍️ Otro…</button><button class="choice" data-value="__UNKNOWN__">🤷 No lo sé</button><button class="choice" data-value="__NONE__">🚫 Sin tema</button>`:'');
  box.querySelectorAll('.choice').forEach(b=>b.onclick=e=>{e.preventDefault();box.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');onSelect(b.dataset.value)});
 }
 function renderProfiles(){
@@ -185,7 +185,7 @@ function renderInterests(){
  makeChoiceBox(box,arr,v=>{
    document.getElementById('customInterestWrap').classList.toggle('show',v==='__OTHER__');
    document.getElementById('unknownInterestWrap').classList.toggle('show',v==='__UNKNOWN__');
-   state.interest=v==='__OTHER__'||v==='__UNKNOWN__'?'':v;
+   state.interest=(v==='__OTHER__'||v==='__UNKNOWN__'||v==='__NONE__')?'':v;
  });
  state.interest=arr[0][0];
 }
@@ -200,12 +200,25 @@ function effectiveInterest(){
  const selected=document.querySelector('#interestOptions .choice.selected')?.dataset.value;
  if(selected==='__OTHER__')return document.getElementById('customInterest').value.trim()||'Tema personalizado';
  if(selected==='__UNKNOWN__')return state.profile||'Perfil versátil';
+ if(selected==='__NONE__')return 'Sin tema';
  return state.interest;
 }
 function age(){return Math.max(1,Math.min(100,Number(document.getElementById('age').value)||8))}
 
 function proposedActivities(interest,place,a){
  const low=interest.toLowerCase();
+ if(low==='sin tema'){
+   if(place==='Exterior') return [
+     ['Gincana de 4 pruebas','Una opción neutra, dinámica y fácil de adaptar.'],
+     ['Búsqueda del tesoro','6 pistas + 2 retos + premio final.'],
+     ['Mini olimpiadas','4 pruebas por equipos con puntuación.']
+   ];
+   return [
+     ['Gincana de 4 pruebas','Cuatro pruebas concretas y fáciles de montar.'],
+     ['Búsqueda del tesoro','6 pistas y un premio final.'],
+     ['Escape room casero','4 pruebas encadenadas y caja final.']
+   ];
+ }
  if(low.includes('fútbol')||low.includes('futbol'))return[
    ['Mini Champions 3x3','Partidos cortos + final. Ideal si hay espacio.'],
    ['Gymkana de fútbol','Penaltis, precisión, conducción y quiz.'],
@@ -313,6 +326,12 @@ function planFor(interest,activity){
    ['Apoyo','Puzzle contrarreloj',['12–20 piezas.','5 minutos para montarlo.','Detrás aparece la siguiente pista.']],
    ['Comodín','Caja misteriosa',['5 objetos dentro.','Solo pueden tocarlos.','Deben identificar al menos 4.']]
  ];
+ if(il==='sin tema')return[
+   ['Actividad principal',activity,['Prepara la actividad elegida completa antes de que lleguen.','Haz grupos pequeños para reducir esperas.','Explica reglas en menos de un minuto.','Marca un final claro con puntuación o reto final.']],
+   ['Apoyo','Reto de puntería',['Coloca 3 objetivos a distintas distancias.','Cada participante tiene 3 intentos.','Cada objetivo vale 1, 2 o 3 puntos.']],
+   ['Apoyo','Reto de memoria',['Coloca 12 objetos sobre una mesa.','Déjalos mirar 30 segundos.','Tápalos y que cada equipo escriba los que recuerde.']],
+   ['Comodín','Mímica relámpago',['Prepara 15 palabras generales: animales, profesiones, películas o acciones.','30 segundos por turno.','1 punto por palabra acertada.']]
+ ];
  return[
    ['Actividad principal',activity,['Confirma reserva, normas, duración y desplazamiento si la actividad es fuera de casa.','Haz que todos sepan dónde y cuándo empieza.','Ten preparada una alternativa simple por si hay retrasos o alguien no puede participar.']],
    ['Antes o después','Reto corto de '+interest,['Prepara un juego de 10–15 minutos relacionado con '+interest+'.','Que no necesite mucho material ni montaje.']],
@@ -347,7 +366,7 @@ function shoppingItems(interest,activity){
   [g<=10?'1':'2','packs de vasos y platos','Menaje para todos los invitados.','vasos platos fiesta'],
   [Math.max(2,Math.ceil(g/8)),'bolsas grandes de snacks','Para tener picoteo suficiente sin pasarse.','snacks fiesta pack'],
   [Math.max(2,Math.ceil(g/6)),'packs de bebidas / zumos','Agua, refrescos y zumos.','bebidas refrescos zumos pack'],
-  ['1','pack de decoración '+interest,'Solo para la zona principal y mesa de tarta.','decoración '+interest+' cumpleaños']
+  ['1',interest==='Sin tema'?'pack de decoración neutra':'pack de decoración '+interest,interest==='Sin tema'?'Globos, guirnalda y mesa de tarta sin temática concreta.':'Solo para la zona principal y mesa de tarta.',interest==='Sin tema'?'decoración cumpleaños neutra globos guirnalda':'decoración '+interest+' cumpleaños']
  ];
  if(activity!=='Sin actividad principal'){
    base.push(['1','kit / material para '+activity,'Solo lo necesario para la actividad principal.','material '+activity]);
@@ -364,6 +383,24 @@ function budgetItems(){
 
 function giftIdeas(age,interest){
  const low=interest.toLowerCase();
+ if(low==='sin tema'){
+   if(age<=12) return[
+    ['🧩','Juego de mesa familiar','Seguro','≈ 20–40 €','Funciona sin depender de una afición concreta.','juego','juego mesa niños familiar'],
+    ['🎧','Auriculares infantiles','Útil','≈ 20–50 €','Regalo práctico y bastante transversal.','auriculares','auriculares niños'],
+    ['🔭','Kit de ciencia / experimentos','Original','≈ 20–45 €','Una opción menos típica que no exige conocer gustos precisos.','ciencia','kit ciencia niños'],
+    ['🎨','Kit creativo completo','Creativo','≈ 15–35 €','Buena opción si no conoces bien sus aficiones.','creativo','kit manualidades niños'],
+    ['🎟️','Experiencia infantil','Experiencia','≈ 30–80 €','Evita acertar con un objeto concreto.','experiencia','experiencia regalo niños'],
+    ['✨','Juego sorpresa / reto','Menos típico','≈ 20–50 €','Pensado para salir de los regalos más previsibles.','original','juego original niños']
+   ];
+   return[
+    ['🎟️','Experiencia','Experiencia','≈ 40–120 €','Buena opción cuando no conoces bien sus gustos.','experiencia','experiencia regalo adulto'],
+    ['🎧','Auriculares Bluetooth','Útil','≈ 30–100 €','Regalo práctico y transversal.','auriculares','auriculares bluetooth regalo'],
+    ['☕','Set gourmet','Gastronomía','≈ 25–60 €','Opción fácil de regalar sin temática concreta.','gourmet','set gourmet regalo'],
+    ['⌚','Smartwatch / reloj','Principal','≈ 50–150 €','Un regalo protagonista sin depender de una afición.','reloj','smartwatch regalo'],
+    ['🧖','Regalo de bienestar','Menos típico','≈ 30–80 €','Alternativa práctica y diferente.','bienestar','regalo bienestar adulto'],
+    ['🖼️','Detalle personalizado','Personal','≈ 20–60 €','Añade componente emocional sin tema concreto.','personalizado','regalo personalizado adulto']
+   ];
+ }
  if(low.includes('fútbol')||low.includes('futbol'))return[
    ['⚽','Balón talla 4','Regalo seguro','≈ 18–35 €','Útil si juega habitualmente.','balón','balón fútbol talla 4 niño'],
    ['🥅','Portería plegable','Regalo principal','≈ 30–60 €','Se puede reutilizar durante años.','portería','portería fútbol plegable niños'],
@@ -403,8 +440,8 @@ function renderAutoGifts(){
 document.getElementById('makeCelebration').onclick=()=>{
  if(!state.activity){alert('Primero elige una opción de actividad.');return}
  const a=age(),interest=effectiveInterest(),chosenActivity=effectiveChosenActivity(),plan=planFor(interest,chosenActivity);
- document.getElementById('resultTitle').textContent=`${state.occasion}: ${interest}`;
- document.getElementById('resultIntro').textContent=`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${chosenActivity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €.`;
+ document.getElementById('resultTitle').textContent=interest==='Sin tema'?`${state.occasion} sin temática`:`${state.occasion}: ${interest}`;
+ document.getElementById('resultIntro').textContent=`Propuesta para ${state.guests} invitados, en ${state.place.toLowerCase()}, con ${chosenActivity.toLowerCase()} como actividad principal y un presupuesto de ${state.budget} €${interest==='Sin tema'?' y sin forzar una temática concreta.':''}`;
  document.getElementById('resultTags').innerHTML=[a+' años',state.guests+' invitados',state.place,chosenActivity,interest,state.budget+' €'].map(x=>`<span class="tag">${esc(x)}</span>`).join('');
  document.getElementById('timeline').innerHTML=plan.map((x,i)=>`<div class="activity ${i===0?'open':''}"><div class="activity-head"><div><span class="plan-role">${esc(x[0])}</span><b>${esc(x[1])}</b></div><div class="chev">⌄</div></div><div class="activity-body"><strong>Cómo hacerlo:</strong><ol>${x[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div></div>`).join('');
  document.querySelectorAll('.activity-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
