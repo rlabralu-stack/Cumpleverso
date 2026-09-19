@@ -192,6 +192,20 @@ h1{font-size:clamp(44px,7vw,76px);line-height:.98;letter-spacing:-.055em;margin:
 <script>
 const panels=[...document.querySelectorAll('.panel')];
 const steps=[...document.querySelectorAll('.step')];
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+const proposal=document.getElementById('proposal');
+const proposalTitle=document.getElementById('proposalTitle');
+const proposalIntro=document.getElementById('proposalIntro');
+const proposalTags=document.getElementById('proposalTags');
+const conceptList=document.getElementById('conceptList');
+const activityList=document.getElementById('activityList');
+const foodList=document.getElementById('foodList');
+const decorList=document.getElementById('decorList');
+const budgetGrid=document.getElementById('budgetGrid');
+const partyProducts=document.getElementById('partyProducts');
+const giftProducts=document.getElementById('giftProducts');
+const edadInput=document.getElementById('edad');
 const data={celebracion:'',edad:'',invitados:'',lugar:'',presupuesto:'',gustos:[]};
 let step=0;
 
@@ -280,12 +294,17 @@ function productsFor(age,gustos){
   else gifts=[['🧱','Principal','LEGO / construcción','€€€'],['🏀','Activo','Material deportivo','€€'],['📚','Creativo','Libro / saga','€'],['🎧','Tecnología','Auriculares','€€'],['🎨','Creativo','Kit manualidades','€€'],['🔭','Menos típico','Kit curioso / ciencia','€€']];
   return {party,gifts};
 }
-function cards(arr,target){
-  document.getElementById(target).innerHTML=arr.map(x=>`<div class="product"><div class="emoji">${x[0]}</div><small>${x[1]}</small><h4>${x[2]}</h4><p>Nivel de precio: <b>${x[3]}</b></p></div>`).join('');
+function cards(arr,targetEl){
+  targetEl.innerHTML=arr.map(x=>`<div class="product"><div class="emoji">${x[0]}</div><small>${x[1]}</small><h4>${x[2]}</h4><p>Nivel de precio: <b>${x[3]}</b></p></div>`).join('');
 }
 function li(arr){return arr.map(x=>`<li>${x}</li>`).join('')}
 
 function generateProposal(){
+  data.edad=edadInput.value;
+  if(!data.celebracion || !data.edad || !data.invitados || !data.lugar || !data.presupuesto || !data.gustos.length){
+    alert('Falta algún dato. Completa celebración, edad, invitados, lugar, presupuesto y al menos un gusto.');
+    return;
+  }
   const age=parseInt(data.edad)||8;
   const gustos=data.gustos.length?data.gustos:['Sorpresa'];
   const theme=themeFor(age,gustos);
@@ -307,13 +326,13 @@ function generateProposal(){
   decorList.innerHTML=li(l.decor);
 
   budgetGrid.innerHTML=budgetData(data.presupuesto).map(x=>`<div><span>${x[0]}</span><b>≈ ${x[1]} €</b></div>`).join('');
-  const p=productsFor(age,gustos); cards(p.party,'partyProducts'); cards(p.gifts,'giftProducts');
+  const p=productsFor(age,gustos); cards(p.party,partyProducts); cards(p.gifts,giftProducts);
 
-  document.getElementById('proposal').style.display='block';
-  setTimeout(()=>document.getElementById('proposal').scrollIntoView({behavior:'smooth',block:'start'}),50);
+  proposal.style.display='block';
+  setTimeout(()=>proposal.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 nextBtn.addEventListener('click',()=>{
-  if(step===1) data.edad=document.getElementById('edad').value;
+  if(step===1) data.edad=edadInput.value;
   if(step<panels.length-1){step++;render()} else generateProposal();
 });
 prevBtn.addEventListener('click',()=>{if(step>0){step--;render()}});
