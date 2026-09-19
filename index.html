@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cumpleverso · Todo para acertar en cada celebración</title>
+  <meta name="description" content="Ideas, regalos, productos y planes para organizar cumpleaños, Navidad, fiestas de 40 años, despedidas y otras celebraciones." />
+  <style>
+    :root{
+      --bg:#fffaf6;
+      --surface:#ffffff;
+      --text:#241d2b;
+      --muted:#746b7c;
+      --primary:#7c4dff;
+      --primary2:#ff6b9d;
+      --accent:#ffc857;
+      --line:#eadff2;
+      --shadow:0 16px 40px rgba(66,45,90,.10);
+      --radius:22px;
+      --max:1160px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button,input,select{font:inherit}
+    .wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+    .topbar{background:#241d2b;color:#fff;text-align:center;padding:8px 16px;font-size:14px}
+    header{position:sticky;top:0;z-index:20;background:rgba(255,250,246,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(124,77,255,.08)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:25px}
+    .orbit{width:38px;height:38px;border:3px solid var(--primary);border-radius:50%;position:relative;transform:rotate(-18deg)}
+    .orbit:before{content:"★";position:absolute;right:-7px;top:-10px;color:var(--primary2);font-size:17px}
+    .navlinks{display:flex;gap:24px;align-items:center;font-weight:700;font-size:14px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:13px 20px;font-weight:800;cursor:pointer;transition:.2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),#9d6cff);color:#fff;box-shadow:0 10px 25px rgba(124,77,255,.25)}
+    .btn-secondary{background:#fff;border:1px solid var(--line);color:var(--text)}
+    .hero{padding:74px 0 38px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
+    .eyebrow{display:inline-flex;padding:7px 12px;background:#f1eaff;color:#5f35c9;border-radius:999px;font-weight:800;font-size:13px}
+    h1{font-size:clamp(42px,6vw,72px);line-height:1.02;letter-spacing:-.05em;margin:18px 0 20px}
+    h1 span{background:linear-gradient(90deg,var(--primary),var(--primary2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{font-size:20px;color:var(--muted);max-width:700px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .hero-card{background:linear-gradient(145deg,#fff,#f7efff);border:1px solid var(--line);border-radius:32px;padding:26px;box-shadow:var(--shadow)}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+    .mini{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+    .mini strong{display:block;font-size:28px}
+    section{padding:56px 0}
+    .section-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}
+    .section-head h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.035em;margin:0}
+    .section-head p{color:var(--muted);max-width:650px;margin:0}
+    .planner{background:#fff;border:1px solid var(--line);border-radius:30px;padding:30px;box-shadow:var(--shadow)}
+    .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .step-dot{padding:8px 12px;border-radius:999px;background:#f4eef8;color:#7a6c85;font-size:13px;font-weight:800}
+    .step-dot.active{background:var(--primary);color:#fff}
+    .panel{display:none}
+    .panel.active{display:block}
+    .panel h3{font-size:28px;margin:0 0 18px}
+    .options{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .option{border:1px solid var(--line);border-radius:18px;background:#fff;padding:18px;cursor:pointer;text-align:left;font-weight:800;transition:.15s}
+    .option:hover,.option.selected{border-color:var(--primary);background:#f7f2ff;transform:translateY(-1px)}
+    .planner-foot{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+    .field{display:grid;gap:8px}
+    .field input,.field select{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .result{display:none;margin-top:28px;border-radius:24px;padding:24px;background:linear-gradient(145deg,#f4edff,#fff0f5);border:1px solid #e4d5fa}
+    .result.show{display:block}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 8px 28px rgba(64,42,82,.06)}
+    .icon{font-size:32px;margin-bottom:14px}
+    .card h3{margin:0 0 8px;font-size:22px}
+    .card p{color:var(--muted);margin:0 0 16px}
+    .link{font-weight:900;color:var(--primary)}
+    .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .product{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+    .product-visual{height:150px;display:grid;place-items:center;font-size:56px;background:linear-gradient(135deg,#f2eaff,#fff5dd)}
+    .product-body{padding:20px}
+    .tag{display:inline-flex;padding:5px 9px;background:#fff2c5;border-radius:999px;font-size:12px;font-weight:800}
+    .price{font-weight:900;font-size:20px;margin:10px 0}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .feature{background:#251e2e;color:#fff;border-radius:28px;padding:30px}
+    .feature p{color:#cfc6d6}
+    .checklist{display:grid;gap:10px;margin-top:18px}
+    .check{display:flex;gap:10px;align-items:flex-start}
+    .check b{color:var(--accent)}
+    .cta{background:linear-gradient(120deg,#7447f3,#b755e8,#ff6b9d);color:#fff;border-radius:32px;padding:42px}
+    .cta h2{font-size:clamp(32px,4vw,50px);margin:0 0 12px}
+    .cta p{max-width:700px;color:#f8eefd}
+    footer{padding:42px 0 60px;color:var(--muted)}
+    .footer-grid{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-top:1px solid var(--line);padding-top:28px}
+    .small{font-size:13px}
+    @media(max-width:900px){
+      .hero-grid,.split{grid-template-columns:1fr}
+      .grid,.product-grid{grid-template-columns:1fr 1fr}
+      .options{grid-template-columns:1fr 1fr}
+      .navlinks{display:none}
+    }
+    @media(max-width:620px){
+      .grid,.product-grid,.options{grid-template-columns:1fr}
+      .hero{padding-top:46px}
+      .planner{padding:20px}
+      .footer-grid{display:grid}
+      .section-head{display:block}
+      .section-head p{margin-top:10px}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">Ideas, organización y regalos para acertar sin perder horas buscando</div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#inicio" aria-label="Cumpleverso">
+        <span class="orbit"></span>
+        <span>Cumpleverso</span>
+      </a>
+      <nav class="navlinks">
+        <a href="#organizar">Organizar una celebración</a>
+        <a href="#regalos">Buscar un regalo</a>
+        <a href="#productos">Productos recomendados</a>
+        <a href="#ideas">Ideas</a>
+      </nav>
+      <a class="btn btn-primary" href="#organizar">Empezar</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">🎉 Menos vueltas. Más aciertos.</span>
+          <h1>Todo para acertar en <span>cada celebración</span></h1>
+          <p class="lead">Organiza un cumpleaños, encuentra un regalo o prepara una fiesta especial con ideas concretas, productos útiles y recomendaciones pensadas para ahorrar tiempo.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#organizar">🎂 Organizar una celebración</a>
+            <a class="btn btn-secondary" href="#regalos">🎁 Buscar un regalo</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <strong style="font-size:28px">¿Qué necesitas hoy?</strong>
+          <p style="color:var(--muted)">Elige el camino más rápido.</p>
+          <div class="mini-grid">
+            <div class="mini"><strong>5</strong><span>plantillas maestras</span></div>
+            <div class="mini"><strong>6</strong><span>regalos por selección</span></div>
+            <div class="mini"><strong>1</strong><span>plan claro</span></div>
+            <div class="mini"><strong>0</strong><span>horas perdidas</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="organizar">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Planificador rápido</span><h2>Cuéntanos la celebración</h2></div>
+          <p>Una primera versión funcional del selector de Cumpleverso. En la web final cada respuesta podrá llevar a páginas y recomendaciones específicas.</p>
+        </div>
+
+        <div class="planner">
+          <div class="steps">
+            <span class="step-dot active">1. Celebración</span>
+            <span class="step-dot">2. Edad</span>
+            <span class="step-dot">3. Invitados</span>
+            <span class="step-dot">4. Lugar</span>
+            <span class="step-dot">5. Presupuesto</span>
+          </div>
+
+          <div class="panel active" data-step="0">
+            <h3>¿Qué vas a celebrar?</h3>
+            <div class="options" data-key="celebracion">
+              <button class="option" data-value="Cumpleaños">🎂 Cumpleaños</button>
+              <button class="option" data-value="Navidad">🎄 Navidad</button>
+              <button class="option" data-value="Fiesta de adulto">🥂 Fiesta de adulto</button>
+              <button class="option" data-value="Otra celebración">✨ Otra celebración</button>
+            </div>
+          </div>
+
+          <div class="panel" data-step="1">
+            <h3>¿Qué edad cumple?</h3>
+            <div class="field">
+              <input id="edad" type="number" min="1" max="100" placeholder="Ej.: 8, 18, 40..." />
+            </div>
+          </div>
+
+          <div class="panel" data-step="2">
+            <h3>¿Cuántas personas vendrán?</h3>
+            <div class="options" data-key="invitados">
+              <button class="option" data-value="Hasta 6">Hasta 6</button>
+              <button class="option" data-value="7-12">7–12</button>
+              <button class="option" data-value="13-20">13–20</button>
+              <button class="option" data-value="Más de 20">Más de 20</button>
+            </div>
+          </div>
+
+          <div class="panel" data-step="3">
+            <h3>¿Dónde será?</h3>
+            <div class="options" data-key="lugar">
+              <button class="option" data-value="Casa">🏠 Casa</button>
+              <button class="option" data-value="Exterior">🌳 Exterior</button>
+              <button class="option" data-value="Local">🎈 Local</button>
+              <button class="option" data-value="Restaurante">🍕 Restaurante</button>
+            </div>
+          </div>
+
+          <div class="panel" data-step="4">
+            <h3>¿Qué presupuesto tienes?</h3>
+            <div class="options" data-key="presupuesto">
+              <button class="option" data-value="Ajustado">€ Ajustado</button>
+              <button class="option" data-value="Medio">€€ Medio</button>
+              <button class="option" data-value="Cómodo">€€€ Cómodo</button>
+              <button class="option" data-value="Sin límite cerrado">✨ Flexible</button>
+            </div>
+          </div>
+
+          <div class="planner-foot">
+            <button class="btn btn-secondary" id="prevBtn">← Atrás</button>
+            <button class="btn btn-primary" id="nextBtn">Siguiente →</button>
+          </div>
+
+          <div class="result" id="resultado">
+            <h3 style="margin-top:0">Tu punto de partida</h3>
+            <p id="resultText"></p>
+            <a class="btn btn-primary" href="#ideas">Ver ideas para esta celebración</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ideas">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Celebraciones</span><h2>Empieza por lo que buscas</h2></div>
+          <p>La arquitectura está pensada para cubrir cumpleaños por edad, fiestas de adultos, Navidad y otras ocasiones sin obligar a crear una página distinta para cada caso desde el primer día.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="icon">🎂</div><h3>Cumpleaños por edad</h3>
+            <p>Ideas, actividades, decoración, comida, presupuesto y productos útiles adaptados a cada etapa.</p>
+            <a class="link" href="#cumple8">Ver ejemplo: 8 años →</a>
+          </article>
+          <article class="card">
+            <div class="icon">🥳</div><h3>Fiestas de adultos</h3>
+            <p>40 años, 50 años, despedidas y celebraciones con un enfoque menos infantil y más social.</p>
+            <a class="link" href="#fiesta40">Ver ejemplo: 40 años →</a>
+          </article>
+          <article class="card">
+            <div class="icon">🎄</div><h3>Navidad y otras celebraciones</h3>
+            <p>El mismo sistema puede crecer más allá del cumpleaños sin perder coherencia ni cambiar la marca.</p>
+            <a class="link" href="#productos">Ver productos útiles →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="regalos">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Regalos</span><h2>Seis opciones, no cincuenta</h2></div>
+          <p>La selección mezcla un regalo de importe alto, opciones medias y económicas, y una o dos propuestas menos obvias para evitar recomendar solo lo típico que quizá ya tenga.</p>
+        </div>
+        <div class="product-grid">
+          <article class="product"><div class="product-visual">🧱</div><div class="product-body"><span class="tag">Regalo principal</span><h3>LEGO especial</h3><p>Una opción de importe más alto y alto valor percibido.</p><div class="price">€€€</div><button class="btn btn-primary">Ver opción</button></div></article>
+          <article class="product"><div class="product-visual">⚽</div><div class="product-body"><span class="tag">Clásico</span><h3>Balón de fútbol</h3><p>Seguro y útil cuando encaja con sus gustos.</p><div class="price">€€</div><button class="btn btn-primary">Ver opción</button></div></article>
+          <article class="product"><div class="product-visual">📚</div><div class="product-body"><span class="tag">Idea media</span><h3>Libro / saga</h3><p>Alternativa que puede personalizarse por edad e intereses.</p><div class="price">€</div><button class="btn btn-primary">Ver opción</button></div></article>
+          <article class="product"><div class="product-visual">🥅</div><div class="product-body"><span class="tag">Deportivo</span><h3>Guantes o accesorio</h3><p>Más específico que el regalo deportivo genérico.</p><div class="price">€€</div><button class="btn btn-primary">Ver opción</button></div></article>
+          <article class="product"><div class="product-visual">🏀</div><div class="product-body"><span class="tag">Alternativa</span><h3>Balón de basket</h3><p>Otra opción práctica y fácil de comprar.</p><div class="price">€€</div><button class="btn btn-primary">Ver opción</button></div></article>
+          <article class="product"><div class="product-visual">🔭</div><div class="product-body"><span class="tag">Menos típico</span><h3>Kit curioso</h3><p>Una propuesta inesperada para quien ya tiene los regalos habituales.</p><div class="price">€€</div><button class="btn btn-primary">Ver opción</button></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="cumple8">
+      <div class="wrap split">
+        <div class="feature">
+          <span class="eyebrow">Ejemplo de plantilla</span>
+          <h2>Cumpleaños de 8 años</h2>
+          <p>Una página útil y comercial: responde rápido a qué hacer, qué comprar y qué regalar sin obligar a leer diez artículos.</p>
+          <div class="checklist">
+            <div class="check"><b>✓</b><span>Tema recomendado: fútbol, aventura, ciencia o videojuegos.</span></div>
+            <div class="check"><b>✓</b><span>2–3 actividades principales, sin sobrecargar el plan.</span></div>
+            <div class="check"><b>✓</b><span>Comida sencilla, decoración y checklist de compra.</span></div>
+            <div class="check"><b>✓</b><span>Bloque final de regalos y productos Amazon.</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Compra lo necesario</h3>
+          <p>Globos para photocall, vasos, manteles, guirnaldas, bolsas de chuches y un elemento de impacto visual.</p>
+          <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+          <h3>Regalos recomendados</h3>
+          <p>Seis opciones equilibradas por precio y originalidad, enlazadas directamente a compra.</p>
+          <a class="btn btn-primary" href="#regalos">Ver selección de regalos</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="fiesta40">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Adultos</span><h2>Fiesta de 40 años</h2></div>
+          <p>La misma base sirve para una celebración adulta: ambiente, música, comida, decoración, recuerdos y productos concretos.</p>
+        </div>
+        <div class="grid">
+          <div class="card"><div class="icon">📸</div><h3>Photocall</h3><p>Fondo, globos, luz y accesorios para que la decoración también genere recuerdos.</p></div>
+          <div class="card"><div class="icon">🎶</div><h3>Música</h3><p>Lista por décadas, altavoz adecuado y momentos concretos de la celebración.</p></div>
+          <div class="card"><div class="icon">🥂</div><h3>Comida y bebida</h3><p>Formato práctico para grupos: picoteo, opciones frías y una presentación cuidada.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="productos">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Afiliación</span><h2>Productos recomendados</h2></div>
+          <p>Un apartado transversal para productos que sirven en muchas celebraciones y pueden generar ventas aunque el usuario no entre buscando un regalo.</p>
+        </div>
+        <div class="grid">
+          <div class="card"><div class="icon">🎈</div><h3>Decoración</h3><p>Globos, arcos, guirnaldas, números gigantes y packs temáticos.</p><a class="link" href="#">Ver productos →</a></div>
+          <div class="card"><div class="icon">📷</div><h3>Photocall</h3><p>Fondos, soportes, iluminación, trípodes y accesorios.</p><a class="link" href="#">Ver productos →</a></div>
+          <div class="card"><div class="icon">🔊</div><h3>Sonido y ambiente</h3><p>Altavoces, luces, proyectores y pequeños extras que elevan la fiesta.</p><a class="link" href="#">Ver productos →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap cta">
+        <h2>Una celebración no necesita más información. Necesita decisiones fáciles.</h2>
+        <p>Cumpleverso está planteado para llevar al usuario desde una necesidad concreta hasta una solución y, cuando tenga sentido, hasta el producto que puede comprar.</p>
+        <a class="btn btn-secondary" href="#organizar">Crear mi plan</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <div class="brand"><span class="orbit"></span><span>Cumpleverso</span></div>
+        <p class="small">Demo conceptual previa a WordPress.</p>
+      </div>
+      <div class="small">© 2026 Cumpleverso · Algunos enlaces futuros podrán ser de afiliación.</div>
+    </div>
+  </footer>
+
+  <script>
+    const panels=[...document.querySelectorAll('.panel')];
+    const dots=[...document.querySelectorAll('.step-dot')];
+    const data={celebracion:'',edad:'',invitados:'',lugar:'',presupuesto:''};
+    let step=0;
+
+    function render(){
+      panels.forEach((p,i)=>p.classList.toggle('active',i===step));
+      dots.forEach((d,i)=>d.classList.toggle('active',i===step));
+      document.getElementById('prevBtn').style.visibility=step===0?'hidden':'visible';
+      document.getElementById('nextBtn').textContent=step===panels.length-1?'Ver mi plan →':'Siguiente →';
+    }
+
+    document.querySelectorAll('.options').forEach(group=>{
+      group.querySelectorAll('.option').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          group.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));
+          btn.classList.add('selected');
+          data[group.dataset.key]=btn.dataset.value;
+        });
+      });
+    });
+
+    document.getElementById('nextBtn').addEventListener('click',()=>{
+      if(step===1){
+        data.edad=document.getElementById('edad').value || 'sin indicar';
+      }
+      if(step<panels.length-1){
+        step++; render();
+      }else{
+        const txt=`Has elegido ${data.celebracion || 'una celebración'}, edad ${data.edad || 'sin indicar'}, ${data.invitados || 'número de invitados sin indicar'}, en ${data.lugar || 'lugar por decidir'}, con presupuesto ${data.presupuesto || 'por definir'}. Cumpleverso te mostraría ahora una propuesta de tema, actividades, comida, decoración, presupuesto, productos necesarios y regalos recomendados.`;
+        document.getElementById('resultText').textContent=txt;
+        document.getElementById('resultado').classList.add('show');
+        document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    });
+
+    document.getElementById('prevBtn').addEventListener('click',()=>{
+      if(step>0){step--;render();}
+    });
+
+    render();
+  </script>
+</body>
+</html>
